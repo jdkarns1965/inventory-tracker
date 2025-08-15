@@ -28,10 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->execute([$partNumber, $partName, $partType, $description, $reorderPoint, $currentStock]);
                         showAlert("Part '$partNumber' added successfully!", 'success');
                     } catch (PDOException $e) {
-                        if ($e->getCode() == 23000) {
-                            showAlert('Part number already exists.', 'error');
+                        error_log("Part creation error: " . $e->getMessage() . " (Code: " . $e->getCode() . ")");
+                        if ($e->getCode() == 23000 || strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                            $alertMessage = "Part number '$partNumber' already exists in the system.";
+                            showAlert($alertMessage, 'error');
+                            error_log("Alert set: " . $alertMessage);
+                            // Debug: Force display the error immediately
+                            echo "<script>alert('DUPLICATE DETECTED: $alertMessage');</script>";
                         } else {
                             showAlert('Error adding part. Please try again.', 'error');
+                            error_log("Generic error alert set");
                         }
                     }
                 } else {
@@ -52,6 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
         }
     }
+}
+
+// Debug: Check if alert is in session
+if (isset($_SESSION['alert'])) {
+    error_log("Alert in session: " . print_r($_SESSION['alert'], true));
 }
 
 // Get all parts with stock status
@@ -359,10 +370,48 @@ function updateStock(partId, partNumber, currentStock) {
     }, 500);
 }
 
+// Check for duplicate part numbers
+function checkDuplicatePartNumber(partNumber) {
+    if (!partNumber.trim()) return;
+    
+    const existingParts = <?= json_encode(array_column($parts, 'part_number')) ?>;
+    const isDuplicate = existingParts.includes(partNumber.trim());
+    
+    const input = document.getElementById('part_number');
+    const submitBtn = input.closest('form').querySelector('button[type="submit"]');
+    
+    if (isDuplicate) {
+        input.classList.add('is-invalid');
+        if (!input.nextElementSibling?.classList.contains('invalid-feedback')) {
+            const feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback';
+            feedback.textContent = `Part number '${partNumber}' already exists in the system.`;
+            input.parentNode.appendChild(feedback);
+        }
+        // submitBtn.disabled = true; // Temporarily disabled for testing
+    } else {
+        input.classList.remove('is-invalid');
+        const feedback = input.parentNode.querySelector('.invalid-feedback');
+        if (feedback) feedback.remove();
+        submitBtn.disabled = false;
+    }
+}
+
 // Auto-focus on search
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize search functionality
     feather.replace();
+    
+    // Add duplicate checking to part number input
+    const partNumberInput = document.getElementById('part_number');
+    if (partNumberInput) {
+        partNumberInput.addEventListener('input', function() {
+            checkDuplicatePartNumber(this.value);
+        });
+        partNumberInput.addEventListener('blur', function() {
+            checkDuplicatePartNumber(this.value);
+        });
+    }
 });
 </script>
 
