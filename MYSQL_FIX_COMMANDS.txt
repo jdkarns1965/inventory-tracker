@@ -1,0 +1,50 @@
+WSL2 LAMP MySQL Fix Commands
+================================
+
+The inventory tracker cannot connect to MySQL because the root user needs to be configured.
+This is very common in WSL2 LAMP installations.
+
+COPY AND PASTE THESE COMMANDS IN YOUR WSL2 TERMINAL:
+
+1. First, try to access MySQL as root:
+   sudo mysql
+
+2. If that works, run these SQL commands (paste one at a time):
+   ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+   FLUSH PRIVILEGES;
+   CREATE DATABASE IF NOT EXISTS inventory_tracker;
+   EXIT;
+
+3. Test the connection:
+   mysql -u root -e "SELECT 'Connection successful!' as status;"
+
+4. If successful, go to: http://localhost/inventory-tracker/install.php
+
+ALTERNATIVE METHOD (if sudo mysql doesn't work):
+================================================
+
+Try these commands instead:
+1. sudo mysql_secure_installation
+   - Follow the prompts
+   - Set root password to be empty or "root"
+
+2. Or try resetting with this:
+   sudo systemctl stop mysql
+   sudo mysqld_safe --skip-grant-tables &
+   mysql -u root
+   
+   Then in MySQL:
+   UPDATE mysql.user SET authentication_string=PASSWORD('') WHERE User='root';
+   FLUSH PRIVILEGES;
+   EXIT;
+   
+   sudo systemctl start mysql
+
+TROUBLESHOOTING:
+===============
+- Make sure MySQL is running: systemctl status mysql
+- Check MySQL error log: sudo tail -f /var/log/mysql/error.log
+- Restart MySQL: sudo systemctl restart mysql
+
+After fixing MySQL, the inventory tracker will work perfectly!
+All the application code is ready - we just need database access.

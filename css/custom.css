@@ -1,0 +1,467 @@
+/* Inventory Tracker Custom Styles - Mobile First */
+
+:root {
+    --fab-size: 56px;
+    --touch-target-min: 44px;
+    --border-radius-lg: 12px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+/* Global Styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+}
+
+/* Touch-friendly inputs */
+.form-control,
+.form-select,
+.btn {
+    min-height: var(--touch-target-min);
+    font-size: 16px; /* Prevents zoom on iOS */
+}
+
+/* Large number inputs for inventory */
+.form-control.form-control-lg {
+    min-height: 60px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Card enhancements */
+.card {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+    font-weight: 600;
+}
+
+/* Stock status indicators */
+.stock-indicator {
+    width: 8px;
+    height: 100%;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.stock-danger { background-color: #dc3545; }
+.stock-warning { background-color: #fd7e14; }
+.stock-success { background-color: #198754; }
+
+/* Dashboard metrics cards */
+.metric-card {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+    color: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.metric-card:hover::before {
+    transform: scale(1);
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Alert variations */
+.alert-stock-out {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-stock-low {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+}
+
+/* List items with touch-friendly spacing */
+.list-group-item {
+    padding: 1rem;
+    border-left: 4px solid transparent;
+}
+
+.list-group-item.stock-danger {
+    border-left-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.05);
+}
+
+.list-group-item.stock-warning {
+    border-left-color: #fd7e14;
+    background-color: rgba(253, 126, 20, 0.05);
+}
+
+.list-group-item.stock-success {
+    border-left-color: #198754;
+    background-color: rgba(25, 135, 84, 0.05);
+}
+
+/* Floating Action Button */
+.fab-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    z-index: 1040;
+}
+
+@media (min-width: 992px) {
+    .fab-container {
+        bottom: 20px;
+    }
+}
+
+.fab {
+    width: var(--fab-size);
+    height: var(--fab-size);
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    color: white;
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+/* Table responsiveness */
+.table-responsive-stack {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .table-responsive-stack table,
+    .table-responsive-stack thead,
+    .table-responsive-stack tbody,
+    .table-responsive-stack th,
+    .table-responsive-stack td,
+    .table-responsive-stack tr {
+        display: block;
+    }
+    
+    .table-responsive-stack thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .table-responsive-stack tr {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: white;
+    }
+    
+    .table-responsive-stack td {
+        border: none;
+        padding: 8px;
+        position: relative;
+        padding-left: 40%;
+    }
+    
+    .table-responsive-stack td:before {
+        content: attr(data-label) ": ";
+        position: absolute;
+        left: 6px;
+        width: 35%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        color: #666;
+    }
+}
+
+/* Form enhancements */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0.65;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+/* Button groups for mobile */
+.btn-group-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .btn-group-mobile {
+        flex-direction: row;
+    }
+}
+
+/* Quick action buttons */
+.quick-action-btn {
+    min-height: 60px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--border-radius-lg);
+    transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Progress bars for stock levels */
+.stock-progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.stock-progress-bar {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Swipeable containers */
+.swipe-container {
+    overflow-x: auto;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    scroll-snap-type: x mandatory;
+}
+
+.swipe-item {
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+    .swipe-item {
+        flex: 0 0 320px;
+    }
+}
+
+/* Dark mode support */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #1a1a1a;
+    --bs-body-color: #ffffff;
+}
+
+[data-bs-theme="dark"] .card {
+    background-color: #2d2d2d;
+    border-color: #404040;
+}
+
+[data-bs-theme="dark"] .metric-card {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+[data-bs-theme="dark"] .fab {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Search enhancements */
+.search-container {
+    position: relative;
+}
+
+.search-container .form-control {
+    padding-left: 2.5rem;
+}
+
+.search-container .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+}
+
+/* Badge enhancements */
+.badge-stock {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 6px;
+}
+
+/* Modal enhancements for mobile */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 1rem;
+        max-width: none;
+    }
+    
+    .modal-fullscreen-sm-down {
+        width: 100vw;
+        max-width: none;
+        height: 100%;
+        margin: 0;
+    }
+    
+    .modal-fullscreen-sm-down .modal-content {
+        height: 100%;
+        border: 0;
+        border-radius: 0;
+    }
+}
+
+/* Accessibility enhancements */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+/* Animation utilities */
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Print styles */
+@media print {
+    .fab-container,
+    .navbar,
+    .btn,
+    .modal,
+    .alert {
+        display: none !important;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid #000;
+    }
+    
+    .btn {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
